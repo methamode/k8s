@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: https://github.com/methamode/k8s.git
     targetRevision: HEAD
-    path: eks/01-argo-cd/environments/staging/apps
+    path: eks/01-argo-cd/environments/staging/first-app
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:
