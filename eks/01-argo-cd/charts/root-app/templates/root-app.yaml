@@ -8,7 +8,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/methamode/k8s.git
-    path: k8s/eks/01-argo-cd/charts/root-app/
+    path: eks/01-argo-cd/charts/root-app/
     targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc
