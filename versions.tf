@@ -8,5 +8,3 @@ terraform {
     }
   }
 }
-
-//test change only
