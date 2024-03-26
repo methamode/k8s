@@ -1,0 +1,30 @@
+# IMPORTANT NOTE: If application is not created, it will be created by argocd. Apply local-cluster.yaml first
+# to modify your local cluster's labels to be used by this applicationset. Ensure that it has non-prod: true label
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: guestbook-2
+  namespace: argocd
+spec:
+  generators:
+  - clusters:
+     selector:
+       matchLabels:
+        non-prod: "true"
+
+  template:
+    metadata:
+      name: '{{name}}-guestbook-2'
+      namespace: argocd
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/mabusaa/argocd-example-apps.git
+        targetRevision: master
+        path: guestbook
+      destination:
+        server: '{{server}}'
+        namespace: guestbook-2
+      syncPolicy:
+         syncOptions:
+          - CreateNamespace=true

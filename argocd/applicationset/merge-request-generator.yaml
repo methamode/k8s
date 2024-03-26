@@ -1,0 +1,53 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: myapps
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+  - pullRequest:
+      github:
+        # The GitHub organization or user.
+        owner: methamode
+        # The Github repository
+        repo: k8s
+        # For GitHub Enterprise (optional)
+        #api: https://git.example.com/
+        # Reference to a Secret containing an access token. (optional)
+        # tokenRef:
+        #   secretName: github-token
+        #   key: token
+        # (optional) use a GitHub App to access the API instead of a PAT.
+        #appSecretName: github-app-repo-creds
+        # Labels is used to filter the PRs that you want to target. (optional)
+        # labels:
+        # - preview
+      requeueAfterSeconds: 1800
+
+  template:
+    metadata:
+      name: 'myapp-{{ .branch }}-{{ .number }}'
+      namespace: argocd
+    spec:
+      source:
+        repoURL: 'https://github.com/methamode/k8s.git'
+        targetRevision: '{{ .head_sha }}'
+        path: helm-guestbook
+        # helm:
+        #   parameters:
+        #   - name: "image.tag"
+        #     #value: "pull-{{ .head_sha }}"
+        #     value: "0.1"
+      project: default
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: "{{ .branch }}-{{ .number }}"
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+          allowEmpty: true
+        syncOptions:
+        - CreateNamespace=true
